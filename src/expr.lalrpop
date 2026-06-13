@@ -1,0 +1,120 @@
+use std::str::FromStr;
+use rust_decimal::Decimal;
+use crate::ast::{Expr, Op, CmpOp};
+
+grammar;
+
+match {
+    "!",
+    "!=",
+    "==",
+    "<=",
+    ">=",
+    "**",
+    "<",
+    ">",
+    "+",
+    "-",
+    "*",
+    "/",
+    "%",
+    "=",
+    "(",
+    ")",
+    ".",
+    "&&",
+    "||",
+    "let",
+    "in",
+    "if",
+    "then",
+    "else",
+    "true",
+    "false",
+    r"[0-9]+(\.[0-9]+)?",
+    r#""[^"]*""#,
+    r"[a-zA-Z_][a-zA-Z0-9_]*",
+    _,
+}
+
+pub Expr: Box<Expr> = {
+    "let" <name:Ident> "=" <value:Or> "in" <body:Expr> =>
+        Box::new(Expr::Let(name, value, body)),
+    "if" <c:Or> "then" <t:Expr> "else" <e:Expr> =>
+        Box::new(Expr::If(c, t, e)),
+    Or,
+};
+
+Or: Box<Expr> = {
+    <l:Or> "||" <r:And> => Box::new(Expr::Or(l, r)),
+    And,
+};
+
+And: Box<Expr> = {
+    <l:And> "&&" <r:Cmp> => Box::new(Expr::And(l, r)),
+    Cmp,
+};
+
+Cmp: Box<Expr> = {
+    <l:Arith> <op:CmpOp> <r:Arith> => Box::new(Expr::Cmp(l, op, r)),
+    Arith,
+};
+
+CmpOp: CmpOp = {
+    "==" => CmpOp::Eq,
+    "!=" => CmpOp::Neq,
+    "<" => CmpOp::Lt,
+    ">" => CmpOp::Gt,
+    "<=" => CmpOp::Lte,
+    ">=" => CmpOp::Gte,
+};
+
+Arith: Box<Expr> = {
+    <l:Arith> "+" <r:Factor> => Box::new(Expr::BinOp(l, Op::Add, r)),
+    <l:Arith> "-" <r:Factor> => Box::new(Expr::BinOp(l, Op::Sub, r)),
+    Factor,
+};
+
+Factor: Box<Expr> = {
+    <l:Factor> "*" <r:Power> => Box::new(Expr::BinOp(l, Op::Mul, r)),
+    <l:Factor> "/" <r:Power> => Box::new(Expr::BinOp(l, Op::Div, r)),
+    <l:Factor> "%" <r:Power> => Box::new(Expr::BinOp(l, Op::Mod, r)),
+    Power,
+};
+
+Power: Box<Expr> = {
+    <l:Unary> "**" <r:Power> => Box::new(Expr::BinOp(l, Op::Pow, r)),
+    Unary,
+};
+
+Unary: Box<Expr> = {
+    "-" <e:Unary> => Box::new(Expr::Neg(e)),
+    "!" <e:Unary> => Box::new(Expr::Not(e)),
+    Access,
+};
+
+Access: Box<Expr> = {
+    <e:Access> "." <field:Ident> => Box::new(Expr::Access(e, field)),
+    Term,
+};
+
+Term: Box<Expr> = {
+    Num,
+    Str,
+    <Ident> => Box::new(Expr::Var(<>)),
+    "(" <Expr> ")",
+    "true" => Box::new(Expr::Bool(true)),
+    "false" => Box::new(Expr::Bool(false)),
+};
+
+Num: Box<Expr> = {
+    r"[0-9]+(\.[0-9]+)?" => Box::new(Expr::Num(Decimal::from_str(<>).expect("number too large (max 28 digits)"))),
+};
+
+Str: Box<Expr> = {
+    r#""[^"]*""# => Box::new(Expr::Str(<>[1..<>.len()-1].to_string())),
+};
+
+Ident: String = {
+    r"[a-zA-Z_][a-zA-Z0-9_]*" => <>.to_string(),
+};

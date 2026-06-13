@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BALLSACK</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.25rem;
+            color: #e94560;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        .repl {
+            width: 100%;
+            max-width: 700px;
+            flex: 1;
+        }
+        #history {
+            background: #16213e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            min-height: 200px;
+            max-height: 60vh;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .entry-input { color: #e94560; }
+        .entry-output { color: #4ecca3; }
+        .entry-error { color: #ff6b6b; }
+        .input-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .prompt {
+            color: #e94560;
+            font-size: 1.1rem;
+            line-height: 2.4rem;
+            flex-shrink: 0;
+        }
+        #expr {
+            flex: 1;
+            background: #16213e;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            outline: none;
+        }
+        #expr:focus { border-color: #e94560; }
+        #eval-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        #eval-btn:hover { background: #c73650; }
+        .context-section {
+            margin-bottom: 1rem;
+        }
+        .context-toggle {
+            background: none;
+            border: none;
+            color: #777;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding: 0.25rem 0;
+        }
+        .context-toggle:hover { color: #e94560; }
+        #context-editor {
+            display: none;
+            margin-top: 0.5rem;
+        }
+        #context-editor.open { display: block; }
+        #context {
+            width: 100%;
+            background: #16213e;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            outline: none;
+            resize: vertical;
+            min-height: 60px;
+        }
+        #context:focus { border-color: #e94560; }
+        .context-hint {
+            color: #555;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        .context-error {
+            color: #ff6b6b;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        .cheatsheet {
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 700px;
+            color: #555;
+            font-size: 0.8rem;
+            line-height: 1.8;
+        }
+        .cheatsheet summary {
+            cursor: pointer;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        .cheatsheet code {
+            background: #16213e;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <p class="subtitle"><strong>B</strong>en's <strong>A</strong>CE <strong>L</strong>ogic <strong>L</strong>anguage: <strong>S</strong>imple <strong>A</strong>rithmetic <strong>C</strong>omputation <strong>K</strong>it</p>
+
+    <div class="repl">
+        <div class="context-section">
+            <button class="context-toggle" id="context-toggle">context {}</button>
+            <div id="context-editor">
+                <textarea id="context" rows="4" spellcheck="false" placeholder='{"x": 5, "name": "ballsack", "debug": true}'></textarea>
+                <div class="context-hint" id="context-status">variables available in expressions</div>
+            </div>
+        </div>
+        <div id="history"></div>
+        <div class="input-row">
+            <span class="prompt">&gt;</span>
+            <input type="text" id="expr" placeholder="try: 2 + 3 * 4" autofocus autocomplete="off" />
+            <button id="eval-btn">eval</button>
+        </div>
+    </div>
+
+    <details class="cheatsheet">
+        <summary>cheatsheet</summary>
+        <p>
+            <strong>Arithmetic:</strong> <code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>**</code><br>
+            <strong>Comparison:</strong> <code>==</code> <code>!=</code> <code>&lt;</code> <code>&gt;</code><br>
+            <strong>Logic:</strong> <code>&amp;&amp;</code> <code>||</code><br>
+            <strong>Booleans:</strong> <code>true</code> <code>false</code><br>
+            <strong>Strings:</strong> <code>"hello" + " world"</code><br>
+            <strong>Let:</strong> <code>let x = 5 in x * 2</code><br>
+            <strong>If:</strong> <code>if x &gt; 3 then "big" else "small"</code><br>
+            <strong>Access:</strong> <code>user.name</code><br>
+            <strong>Context:</strong> set variables via the context JSON above<br>
+        </p>
+    </details>
+
+    <script>
+        const input = document.getElementById('expr');
+        const history = document.getElementById('history');
+        const btn = document.getElementById('eval-btn');
+        const ctxToggle = document.getElementById('context-toggle');
+        const ctxEditor = document.getElementById('context-editor');
+        const ctxInput = document.getElementById('context');
+        const ctxStatus = document.getElementById('context-status');
+        const commandHistory = [];
+        let historyIndex = -1;
+
+        ctxToggle.addEventListener('click', () => {
+            ctxEditor.classList.toggle('open');
+            updateContextLabel();
+        });
+
+        ctxInput.addEventListener('input', updateContextLabel);
+
+        function updateContextLabel() {
+            const raw = ctxInput.value.trim();
+            if (!raw) {
+                ctxToggle.textContent = 'context {}';
+                ctxStatus.textContent = 'variables available in expressions';
+                ctxStatus.className = 'context-hint';
+                return;
+            }
+            try {
+                const obj = JSON.parse(raw);
+                const keys = Object.keys(obj);
+                ctxToggle.textContent = 'context { ' + keys.join(', ') + ' }';
+                ctxStatus.textContent = keys.length + ' variable' + (keys.length === 1 ? '' : 's') + ' set';
+                ctxStatus.className = 'context-hint';
+            } catch {
+                ctxToggle.textContent = 'context { ? }';
+                ctxStatus.textContent = 'invalid JSON';
+                ctxStatus.className = 'context-error';
+            }
+        }
+
+        function getContext() {
+            const raw = ctxInput.value.trim();
+            if (!raw) return undefined;
+            try { return JSON.parse(raw); }
+            catch { return undefined; }
+        }
+
+        async function evaluate() {
+            const expr = input.value.trim();
+            if (!expr) return;
+            commandHistory.unshift(expr);
+            historyIndex = -1;
+
+            appendHistory(expr, 'entry-input', '&gt;');
+            input.value = '';
+
+            const body = { expr };
+            const ctx = getContext();
+            if (ctx) body.context = ctx;
+
+            try {
+                const res = await fetch('/eval', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                });
+                const data = await res.json();
+                if (data.error) {
+                    appendHistory(data.error, 'entry-error');
+                } else {
+                    appendHistory(data.result, 'entry-output');
+                }
+            } catch (e) {
+                appendHistory('network error', 'entry-error');
+            }
+        }
+
+        function appendHistory(text, cls, prefix = '') {
+            const div = document.createElement('div');
+            div.className = cls;
+            div.innerHTML = prefix + escapeHtml(text);
+            history.appendChild(div);
+            history.scrollTop = history.scrollHeight;
+        }
+
+        function escapeHtml(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') evaluate();
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    input.value = commandHistory[historyIndex];
+                }
+            }
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    input.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = -1;
+                    input.value = '';
+                }
+            }
+        });
+        btn.addEventListener('click', evaluate);
+    </script>
+</body>
+</html>
