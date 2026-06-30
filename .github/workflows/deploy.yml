@@ -11,7 +11,7 @@ permissions:
 env:
   ACR_NAME: bonkregistry
   IMAGE_NAME: bonk
-  RESOURCE_GROUP: bonk-rg
+  RESOURCE_GROUP: bonk2-rg
   CONTAINER_APP: bonk-app
 
 jobs:

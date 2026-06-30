@@ -12,7 +12,7 @@ variable "location" {
 variable "resource_group_name" {
   description = "Resource group name"
   type        = string
-  default     = "bonk-rg"
+  default     = "bonk2-rg"
 }
 
 variable "acr_name" {

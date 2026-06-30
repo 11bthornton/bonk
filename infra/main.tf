@@ -10,7 +10,7 @@ terraform {
     resource_group_name  = "hub"
     storage_account_name = "thorntonterraformstate"
     container_name       = "tfstate"
-    key                  = "bonk.tfstate"
+    key                  = "bonk2.tfstate"
     use_oidc             = true
   }
 }
