@@ -5,6 +5,14 @@ terraform {
       version = "~> 4.0"
     }
   }
+
+  backend "azurerm" {
+    resource_group_name  = "hub"
+    storage_account_name = "thorntonterraformstate"
+    container_name       = "tfstate"
+    key                  = "bonk.tfstate"
+    use_oidc             = true
+  }
 }
 
 provider "azurerm" {
