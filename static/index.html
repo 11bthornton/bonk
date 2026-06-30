@@ -3,37 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BALLSACK</title>
+    <title>~*~ BONK ~*~</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Courier New', monospace;
-            background: #1a1a2e;
+            background: #000033;
             color: #e0e0e0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem;
+            padding: 1rem 1rem 2rem;
+            background-image:
+                radial-gradient(1px 1px at 10% 20%, white 1px, transparent 0),
+                radial-gradient(1px 1px at 30% 60%, white 1px, transparent 0),
+                radial-gradient(1px 1px at 50% 10%, #ffff99 1px, transparent 0),
+                radial-gradient(1px 1px at 70% 80%, white 1px, transparent 0),
+                radial-gradient(1px 1px at 90% 40%, #ffff99 1px, transparent 0),
+                radial-gradient(1px 1px at 20% 90%, white 1px, transparent 0),
+                radial-gradient(1px 1px at 60% 50%, white 1px, transparent 0),
+                radial-gradient(1px 1px at 80% 15%, white 1px, transparent 0),
+                radial-gradient(1px 1px at 45% 75%, #ffff99 1px, transparent 0),
+                radial-gradient(1px 1px at 15% 45%, white 1px, transparent 0);
         }
+
         h1 {
+            font-family: 'Press Start 2P', monospace;
             font-size: 3rem;
-            margin-bottom: 0.25rem;
-            color: #e94560;
+            margin-bottom: 0.1rem;
+            background: linear-gradient(180deg, #ff00ff, #ff6600, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(2px 2px 0 #ff00ff66);
+            animation: bonkPulse 2s ease-in-out infinite;
         }
+
+        @keyframes bonkPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
         .subtitle {
-            color: #666;
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
+            color: #00ffff;
+            margin-bottom: 0.3rem;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
         }
+
+        .marquee {
+            width: 100%;
+            max-width: 700px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            border-top: 2px dashed #ff00ff44;
+            border-bottom: 2px dashed #ff00ff44;
+            padding: 0.2rem 0;
+        }
+
+        .marquee-inner {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll 20s linear infinite;
+            color: #ffff00;
+            font-size: 0.75rem;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
         .repl {
             width: 100%;
             max-width: 700px;
             flex: 1;
         }
+
         #history {
-            background: #16213e;
-            border-radius: 8px;
+            background: #000011;
+            border: 3px ridge #6666cc;
             padding: 1rem;
             margin-bottom: 1rem;
             min-height: 200px;
@@ -41,139 +94,291 @@
             overflow-y: auto;
             font-size: 0.95rem;
             line-height: 1.6;
+            box-shadow: inset 0 0 20px rgba(0, 0, 50, 0.5), 0 0 10px rgba(102, 102, 204, 0.3);
         }
-        .entry-input { color: #e94560; }
-        .entry-output { color: #4ecca3; }
-        .entry-error { color: #ff6b6b; }
+
+        #history::-webkit-scrollbar { width: 12px; }
+        #history::-webkit-scrollbar-track { background: #000022; }
+        #history::-webkit-scrollbar-thumb { background: #6666cc; border: 2px solid #000022; }
+
+        .entry-input { color: #ff66ff; }
+        .entry-output { color: #00ff66; }
+        .entry-error { color: #ff3333; }
+
         .input-row {
             display: flex;
             gap: 0.5rem;
         }
+
         .prompt {
-            color: #e94560;
+            color: #ff66ff;
             font-size: 1.1rem;
             line-height: 2.4rem;
             flex-shrink: 0;
+            text-shadow: 0 0 6px #ff00ff88;
         }
+
         #expr {
             flex: 1;
-            background: #16213e;
-            border: 2px solid #333;
-            border-radius: 8px;
+            background: #000011;
+            border: 3px ridge #6666cc;
             padding: 0.5rem 1rem;
-            color: #e0e0e0;
+            color: #00ffff;
             font-family: 'Courier New', monospace;
             font-size: 1.1rem;
             outline: none;
         }
-        #expr:focus { border-color: #e94560; }
+
+        #expr:focus {
+            border-color: #ff66ff;
+            box-shadow: 0 0 8px #ff00ff66;
+        }
+
+        #expr::placeholder { color: #336; }
+
         #eval-btn {
-            background: #e94560;
+            background: linear-gradient(180deg, #ff66ff, #cc00cc);
             color: white;
-            border: none;
-            border-radius: 8px;
+            border: 3px outset #ff99ff;
             padding: 0.5rem 1.5rem;
             font-family: 'Courier New', monospace;
             font-size: 1rem;
             cursor: pointer;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #660066;
         }
-        #eval-btn:hover { background: #c73650; }
+
+        #eval-btn:hover {
+            background: linear-gradient(180deg, #ff99ff, #ee00ee);
+        }
+
+        #eval-btn:active {
+            border-style: inset;
+        }
+
         .context-section {
             margin-bottom: 1rem;
         }
+
         .context-toggle {
             background: none;
             border: none;
-            color: #777;
+            color: #6666cc;
             font-family: 'Courier New', monospace;
             font-size: 0.85rem;
             cursor: pointer;
             padding: 0.25rem 0;
         }
-        .context-toggle:hover { color: #e94560; }
+
+        .context-toggle:hover { color: #ff66ff; }
+
         #context-editor {
             display: none;
             margin-top: 0.5rem;
         }
+
         #context-editor.open { display: block; }
+
         #context {
             width: 100%;
-            background: #16213e;
-            border: 2px solid #333;
-            border-radius: 8px;
+            background: #000011;
+            border: 3px ridge #6666cc;
             padding: 0.5rem 1rem;
-            color: #e0e0e0;
+            color: #00ffff;
             font-family: 'Courier New', monospace;
             font-size: 0.9rem;
             outline: none;
             resize: vertical;
             min-height: 60px;
         }
-        #context:focus { border-color: #e94560; }
-        .context-hint {
-            color: #555;
-            font-size: 0.75rem;
-            margin-top: 0.25rem;
+
+        #context:focus {
+            border-color: #ff66ff;
+            box-shadow: 0 0 8px #ff00ff66;
         }
-        .context-error {
-            color: #ff6b6b;
-            font-size: 0.75rem;
-            margin-top: 0.25rem;
-        }
+
+        .context-hint { color: #555; font-size: 0.75rem; margin-top: 0.25rem; }
+        .context-error { color: #ff3333; font-size: 0.75rem; margin-top: 0.25rem; }
+
         .cheatsheet {
             margin-top: 2rem;
             width: 100%;
             max-width: 700px;
-            color: #555;
+            color: #9999cc;
             font-size: 0.8rem;
             line-height: 1.8;
+            border: 2px ridge #333366;
+            padding: 0.75rem;
+            background: #00001a;
         }
+
+        .cheatsheet[open] { padding: 0.75rem; }
+
         .cheatsheet summary {
             cursor: pointer;
-            color: #777;
+            color: #ff66ff;
             font-size: 0.9rem;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
         }
+
+        .cheatsheet-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem 2rem;
+            margin-top: 0.75rem;
+        }
+
         .cheatsheet code {
-            background: #16213e;
+            background: #000033;
             padding: 0.1rem 0.4rem;
-            border-radius: 4px;
-            color: #888;
+            border: 1px solid #333366;
+            color: #00ff66;
+            font-size: 0.8rem;
+        }
+
+        .cheatsheet .section-label {
+            color: #ffff00;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #ff0066;
+            color: white;
+            font-size: 0.55rem;
+            padding: 0.1rem 0.3rem;
+            border-radius: 2px;
+            vertical-align: middle;
+            font-family: 'Press Start 2P', monospace;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .counter {
+            margin-top: 1.5rem;
+            color: #666;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        .counter img {
+            vertical-align: middle;
+        }
+
+        .digit-box {
+            display: inline-block;
+            background: #111;
+            border: 1px inset #444;
+            color: #00ff00;
+            padding: 0.1rem 0.3rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            min-width: 1rem;
+            text-align: center;
+        }
+
+        .hr-fancy {
+            width: 100%;
+            max-width: 700px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff00ff, #00ffff, #ffff00, #ff00ff, transparent);
+            border: none;
+            margin: 0.4rem 0;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .cheatsheet-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <p class="subtitle"><strong>B</strong>en's <strong>A</strong>CE <strong>L</strong>ogic <strong>L</strong>anguage: <strong>S</strong>imple <strong>A</strong>rithmetic <strong>C</strong>omputation <strong>K</strong>it</p>
+    <h1>BONK</h1>
+    <p class="subtitle">THE EXPRESSION LANGUAGE</p>
+    <div class="hr-fancy"></div>
+
+    <div class="marquee">
+        <span class="marquee-inner">
+            *** welcome to BONK *** an expression language with drunk math and vibes *** try: 2 ~+ 2 *** vibecheck returns a random boolean *** built with rust and bad decisions ***
+        </span>
+    </div>
 
     <div class="repl">
         <div class="context-section">
             <button class="context-toggle" id="context-toggle">context {}</button>
             <div id="context-editor">
-                <textarea id="context" rows="4" spellcheck="false" placeholder='{"x": 5, "name": "ballsack", "debug": true}'></textarea>
+                <textarea id="context" rows="4" spellcheck="false" placeholder='{"x": 5, "name": "bonk", "debug": true}'></textarea>
                 <div class="context-hint" id="context-status">variables available in expressions</div>
             </div>
         </div>
         <div id="history"></div>
         <div class="input-row">
-            <span class="prompt">&gt;</span>
-            <input type="text" id="expr" placeholder="try: 2 + 3 * 4" autofocus autocomplete="off" />
-            <button id="eval-btn">eval</button>
+            <span class="prompt">bonk&gt;</span>
+            <input type="text" id="expr" placeholder="try: 2 ~+ 2" autofocus autocomplete="off" />
+            <button id="eval-btn">EVAL</button>
         </div>
     </div>
 
     <details class="cheatsheet">
-        <summary>cheatsheet</summary>
-        <p>
-            <strong>Arithmetic:</strong> <code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>**</code><br>
-            <strong>Comparison:</strong> <code>==</code> <code>!=</code> <code>&lt;</code> <code>&gt;</code><br>
-            <strong>Logic:</strong> <code>&amp;&amp;</code> <code>||</code><br>
-            <strong>Booleans:</strong> <code>true</code> <code>false</code><br>
-            <strong>Strings:</strong> <code>"hello" + " world"</code><br>
-            <strong>Let:</strong> <code>let x = 5 in x * 2</code><br>
-            <strong>If:</strong> <code>if x &gt; 3 then "big" else "small"</code><br>
-            <strong>Access:</strong> <code>user.name</code><br>
-            <strong>Context:</strong> set variables via the context JSON above<br>
-        </p>
+        <summary>CHEATSHEET</summary>
+        <div class="cheatsheet-grid">
+            <div>
+                <div class="section-label">Arithmetic</div>
+                <code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code> <code>**</code>
+            </div>
+            <div>
+                <div class="section-label">Drunk Math <span class="badge">NEW</span></div>
+                <code>~+</code> <code>~-</code> <code>~*</code> <code>~/</code> <code>~%</code> <code>~**</code><br>
+                same ops, &plusmn;5% wobble
+            </div>
+            <div>
+                <div class="section-label">Comparison</div>
+                <code>==</code> <code>!=</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code>
+            </div>
+            <div>
+                <div class="section-label">Logic</div>
+                <code>&amp;&amp;</code> <code>||</code> <code>!</code>
+            </div>
+            <div>
+                <div class="section-label">Values</div>
+                <code>true</code> <code>false</code> <code>"strings"</code> <code>42</code>
+            </div>
+            <div>
+                <div class="section-label">Vibecheck <span class="badge">NEW</span></div>
+                <code>vibecheck</code> &rarr; random bool<br>
+                nondeterminism as a feature
+            </div>
+            <div>
+                <div class="section-label">Let bindings</div>
+                <code>let x = 5 in x * 2</code>
+            </div>
+            <div>
+                <div class="section-label">Conditionals</div>
+                <code>if x &gt; 3 then "big" else "smol"</code>
+            </div>
+            <div>
+                <div class="section-label">Objects</div>
+                <code>user.name</code> (via context JSON)
+            </div>
+            <div>
+                <div class="section-label">Strings</div>
+                <code>"hello" + " " + "world"</code>
+            </div>
+        </div>
     </details>
+
+    <div class="counter">
+        you are visitor #<span class="digit-box" id="visitor-count">???</span>
+        &bull; best viewed in Netscape Navigator
+    </div>
 
     <script>
         const input = document.getElementById('expr');
@@ -185,6 +390,10 @@
         const ctxStatus = document.getElementById('context-status');
         const commandHistory = [];
         let historyIndex = -1;
+
+        // fake visitor counter
+        const vc = document.getElementById('visitor-count');
+        vc.textContent = String(Math.floor(Math.random() * 90000) + 10000);
 
         ctxToggle.addEventListener('click', () => {
             ctxEditor.classList.toggle('open');
@@ -227,7 +436,7 @@
             commandHistory.unshift(expr);
             historyIndex = -1;
 
-            appendHistory(expr, 'entry-input', '&gt;');
+            appendHistory(expr, 'entry-input', 'bonk&gt; ');
             input.value = '';
 
             const body = { expr };
