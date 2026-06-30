@@ -102,20 +102,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ballsack"
-version = "0.1.0"
-dependencies = [
- "axum",
- "lalrpop",
- "lalrpop-util",
- "rust_decimal",
- "serde",
- "serde_json",
- "tokio",
- "tower-http",
-]
-
-[[package]]
 name = "bit-set"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -155,6 +141,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3078c7629b62d3f0439517fa394996acacc5cbc91c5a20d8c658e77abd503a71"
 dependencies = [
  "generic-array",
+]
+
+[[package]]
+name = "bonk"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "lalrpop",
+ "lalrpop-util",
+ "rand",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tower-http",
 ]
 
 [[package]]

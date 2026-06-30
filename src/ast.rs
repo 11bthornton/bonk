@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 use std::fmt;
+
+use rand::Rng;
 use rust_decimal::Decimal;
 
 #[derive(Clone, Debug)]
@@ -46,6 +48,12 @@ impl Value {
     }
 }
 
+fn wobble(n: Decimal) -> Decimal {
+    let mut rng = rand::thread_rng();
+    let pct: i64 = rng.gen_range(-50..=50);
+    n * (Decimal::ONE + Decimal::new(pct, 3))
+}
+
 pub enum Expr {
     Num(Decimal),
     Str(String),
@@ -55,11 +63,13 @@ pub enum Expr {
     Neg(Box<Expr>),
     Not(Box<Expr>),
     BinOp(Box<Expr>, Op, Box<Expr>),
+    DrunkBinOp(Box<Expr>, Op, Box<Expr>),
     Cmp(Box<Expr>, CmpOp, Box<Expr>),
     And(Box<Expr>, Box<Expr>),
     Or(Box<Expr>, Box<Expr>),
     Let(String, Box<Expr>, Box<Expr>),
     If(Box<Expr>, Box<Expr>, Box<Expr>),
+    VibeCheck,
 }
 
 pub enum Op {
@@ -81,11 +91,46 @@ pub enum CmpOp {
 }
 
 impl Expr {
+    fn eval_binop(l: &Expr, op: &Op, r: &Expr, vars: &mut HashMap<String, Value>) -> Result<Value, String> {
+        let lv = l.eval(vars)?;
+        let rv = r.eval(vars)?;
+        match op {
+            Op::Add => match (&lv, &rv) {
+                (Value::Str(a), Value::Str(b)) => Ok(Value::Str(format!("{a}{b}"))),
+                (Value::Str(a), b) => Ok(Value::Str(format!("{a}{b}"))),
+                (a, Value::Str(b)) => Ok(Value::Str(format!("{a}{b}"))),
+                _ => Ok(Value::Num(lv.as_num()? + rv.as_num()?)),
+            },
+            Op::Sub => Ok(Value::Num(lv.as_num()? - rv.as_num()?)),
+            Op::Mul => Ok(Value::Num(lv.as_num()? * rv.as_num()?)),
+            Op::Div => {
+                let d = rv.as_num()?;
+                if d.is_zero() {
+                    return Err("division by zero".to_string());
+                }
+                Ok(Value::Num(lv.as_num()?.checked_div(d)
+                    .ok_or_else(|| "division overflow".to_string())?))
+            }
+            Op::Mod => {
+                let d = rv.as_num()?;
+                if d.is_zero() {
+                    return Err("modulo by zero".to_string());
+                }
+                Ok(Value::Num(lv.as_num()? % d))
+            }
+            Op::Pow => {
+                use rust_decimal::MathematicalOps;
+                Ok(Value::Num(lv.as_num()?.powd(rv.as_num()?)))
+            }
+        }
+    }
+
     pub fn eval(&self, vars: &mut HashMap<String, Value>) -> Result<Value, String> {
         match self {
             Expr::Num(n) => Ok(Value::Num(*n)),
             Expr::Str(s) => Ok(Value::Str(s.clone())),
             Expr::Bool(b) => Ok(Value::Bool(*b)),
+            Expr::VibeCheck => Ok(Value::Bool(rand::random())),
             Expr::Var(name) => vars.get(name)
                 .cloned()
                 .ok_or_else(|| format!("undefined variable: {name}")),
@@ -100,37 +145,16 @@ impl Expr {
                     _ => Err(format!("cannot access field '{field}' on {val}")),
                 }
             }
-            Expr::BinOp(l, op, r) => {
-                let lv = l.eval(vars)?;
-                let rv = r.eval(vars)?;
-                match op {
-                    Op::Add => match (&lv, &rv) {
-                        (Value::Str(a), Value::Str(b)) => Ok(Value::Str(format!("{a}{b}"))),
-                        (Value::Str(a), b) => Ok(Value::Str(format!("{a}{b}"))),
-                        (a, Value::Str(b)) => Ok(Value::Str(format!("{a}{b}"))),
-                        _ => Ok(Value::Num(lv.as_num()? + rv.as_num()?)),
-                    },
-                    Op::Sub => Ok(Value::Num(lv.as_num()? - rv.as_num()?)),
-                    Op::Mul => Ok(Value::Num(lv.as_num()? * rv.as_num()?)),
-                    Op::Div => {
-                        let d = rv.as_num()?;
-                        if d.is_zero() {
-                            return Err("division by zero".to_string());
-                        }
-                        Ok(Value::Num(lv.as_num()?.checked_div(d)
-                            .ok_or_else(|| "division overflow".to_string())?))
+            Expr::BinOp(l, op, r) | Expr::DrunkBinOp(l, op, r) => {
+                let drunk = matches!(self, Expr::DrunkBinOp(..));
+                let result = Self::eval_binop(l, op, r, vars)?;
+                if drunk {
+                    match result {
+                        Value::Num(n) => Ok(Value::Num(wobble(n))),
+                        other => Ok(other),
                     }
-                    Op::Mod => {
-                        let d = rv.as_num()?;
-                        if d.is_zero() {
-                            return Err("modulo by zero".to_string());
-                        }
-                        Ok(Value::Num(lv.as_num()? % d))
-                    }
-                    Op::Pow => {
-                        use rust_decimal::MathematicalOps;
-                        Ok(Value::Num(lv.as_num()?.powd(rv.as_num()?)))
-                    }
+                } else {
+                    Ok(result)
                 }
             }
             Expr::Cmp(l, op, r) => {
