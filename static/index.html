@@ -307,7 +307,7 @@
 
     <div class="marquee">
         <span class="marquee-inner">
-            *** welcome to BONK *** an expression language with drunk math and vibes *** try: 2 ~+ 2 *** vibecheck returns a random boolean *** built with rust and bad decisions ***
+            *** welcome to BONK *** all expressions must end with "please" *** try: 2 ~+ 2 please *** vibecheck returns a random boolean *** drunk math adds ~5% wobble *** built with rust and bad decisions ***
         </span>
     </div>
 
@@ -322,7 +322,7 @@
         <div id="history"></div>
         <div class="input-row">
             <span class="prompt">bonk&gt;</span>
-            <input type="text" id="expr" placeholder="try: 2 ~+ 2" autofocus autocomplete="off" />
+            <input type="text" id="expr" placeholder="try: 2 ~+ 2 please" autofocus autocomplete="off" />
             <button id="eval-btn">EVAL</button>
         </div>
     </div>
@@ -357,20 +357,23 @@
                 nondeterminism as a feature
             </div>
             <div>
-                <div class="section-label">Let bindings</div>
-                <code>let x = 5 in x * 2</code>
+                <div class="section-label">Please <span class="badge">REQUIRED</span></div>
+                all expressions must end with <code>please</code><br>
+                or bonk will refuse to help
             </div>
             <div>
-                <div class="section-label">Conditionals</div>
-                <code>if x &gt; 3 then "big" else "smol"</code>
+                <div class="section-label">Examples</div>
+                <code>2 + 2 please</code><br>
+                <code>let x = 5 in x * 2 please</code><br>
+                <code>if vibecheck then "yes" else "no" please</code>
             </div>
             <div>
                 <div class="section-label">Objects</div>
-                <code>user.name</code> (via context JSON)
+                <code>user.name please</code> (via context JSON)
             </div>
             <div>
                 <div class="section-label">Strings</div>
-                <code>"hello" + " " + "world"</code>
+                <code>"hello" + " world" please</code>
             </div>
         </div>
     </details>

@@ -29,14 +29,20 @@ pub fn json_to_value(v: &JsonValue) -> Result<Value, String> {
 }
 
 pub fn eval_expr(input: &str, context: &Option<HashMap<String, JsonValue>>) -> Result<String, String> {
-    let parser = expr::ExprParser::new();
+    let parser = expr::ProgramParser::new();
     let mut vars = HashMap::new();
     if let Some(ctx) = context {
         for (k, v) in ctx {
             vars.insert(k.clone(), json_to_value(v)?);
         }
     }
-    let ast = parser.parse(input).map_err(|e| format!("Parse error: {e}"))?;
+    let ast = parser.parse(input).map_err(|e| {
+        if input.trim().len() > 0 && !input.trim().ends_with("please") {
+            "Parse error: you forgot to say please".to_string()
+        } else {
+            format!("Parse error: {e}")
+        }
+    })?;
     let val = ast.eval(&mut vars)?;
     Ok(val.to_string())
 }

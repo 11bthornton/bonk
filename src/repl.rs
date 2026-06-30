@@ -5,7 +5,7 @@ use crate::eval::expr;
 
 pub fn run() {
     let mut vars = HashMap::new();
-    let parser = expr::ExprParser::new();
+    let parser = expr::ProgramParser::new();
     let stdin = io::stdin();
 
     loop {
@@ -26,6 +26,9 @@ pub fn run() {
                 Ok(val) => println!("{val}"),
                 Err(e) => eprintln!("Runtime error: {e}"),
             },
+            Err(_) if !line.ends_with("please") => {
+                eprintln!("Parse error: you forgot to say please")
+            }
             Err(e) => eprintln!("Parse error: {e}"),
         }
     }

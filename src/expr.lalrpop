@@ -38,13 +38,18 @@ match {
     "true",
     "false",
     "vibecheck",
+    "please",
     r"[0-9]+(\.[0-9]+)?",
     r#""[^"]*""#,
     r"[a-zA-Z_][a-zA-Z0-9_]*",
     _,
 }
 
-pub Expr: Box<Expr> = {
+pub Program: Box<Expr> = {
+    <Expr> "please" => <>,
+};
+
+Expr: Box<Expr> = {
     "let" <name:Ident> "=" <value:Or> "in" <body:Expr> =>
         Box::new(Expr::Let(name, value, body)),
     "if" <c:Or> "then" <t:Expr> "else" <e:Expr> =>
