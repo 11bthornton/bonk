@@ -72,17 +72,6 @@ resource "azurerm_dns_cname_record" "bonk" {
   record              = "${var.app_name}.${azurerm_container_app_environment.main.default_domain}"
 }
 
-resource "azurerm_container_app_custom_domain" "bonk" {
-  name                     = "bonk.ben-thornton.com"
-  container_app_id         = azurerm_container_app.main.id
-  certificate_binding_type = "Disabled"
-
-  depends_on = [
-    azurerm_dns_cname_record.bonk,
-    azurerm_dns_txt_record.bonk_verification,
-  ]
-}
-
 resource "azurerm_container_app" "main" {
   name                         = var.app_name
   resource_group_name          = azurerm_resource_group.main.name
