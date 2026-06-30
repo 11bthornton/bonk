@@ -40,6 +40,41 @@ resource "azurerm_container_app_environment" "main" {
   log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
 }
 
+data "azurerm_dns_zone" "hub" {
+  name                = "ben-thornton.com"
+  resource_group_name = "hub"
+}
+
+resource "azurerm_dns_txt_record" "bonk_verification" {
+  name                = "asuid.bonk"
+  zone_name           = data.azurerm_dns_zone.hub.name
+  resource_group_name = data.azurerm_dns_zone.hub.resource_group_name
+  ttl                 = 300
+
+  record {
+    value = azurerm_container_app_environment.main.custom_domain_verification_id
+  }
+}
+
+resource "azurerm_dns_cname_record" "bonk" {
+  name                = "bonk"
+  zone_name           = data.azurerm_dns_zone.hub.name
+  resource_group_name = data.azurerm_dns_zone.hub.resource_group_name
+  ttl                 = 300
+  record              = "${var.app_name}.${azurerm_container_app_environment.main.default_domain}"
+}
+
+resource "azurerm_container_app_custom_domain" "bonk" {
+  name                     = "bonk.ben-thornton.com"
+  container_app_id         = azurerm_container_app.main.id
+  certificate_binding_type = "Disabled"
+
+  depends_on = [
+    azurerm_dns_cname_record.bonk,
+    azurerm_dns_txt_record.bonk_verification,
+  ]
+}
+
 resource "azurerm_container_app" "main" {
   name                         = var.app_name
   resource_group_name          = azurerm_resource_group.main.name
