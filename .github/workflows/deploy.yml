@@ -10,7 +10,7 @@ permissions:
 
 env:
   ACR_NAME: bonkregistry
-  IMAGE_NAME: ballsack
+  IMAGE_NAME: bonk
   RESOURCE_GROUP: bonk-rg
   CONTAINER_APP: bonk-app
 

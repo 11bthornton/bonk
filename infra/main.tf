@@ -105,8 +105,8 @@ resource "azurerm_container_app" "main" {
     max_replicas = 1
 
     container {
-      name   = "ballsack"
-      image  = "${azurerm_container_registry.main.login_server}/ballsack:latest"
+      name   = "bonk"
+      image  = "${azurerm_container_registry.main.login_server}/bonk:latest"
       cpu    = 0.25
       memory = "0.5Gi"
 
